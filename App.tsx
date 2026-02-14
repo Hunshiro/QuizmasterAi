@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Analytics } from '@vercel/analytics/react';
 import { Quiz, QuizResult } from './types';
 import { generateQuizFromPDF } from './services/geminiService';
 import { QuestionCard } from './components/QuestionCard';
@@ -114,8 +115,10 @@ const App: React.FC = () => {
   const fileSizeMb = file ? (file.size / (1024 * 1024)).toFixed(1) : null;
 
   if (!quiz) return (
-    <div
-      className="min-h-screen flex items-center justify-center p-6 md:p-10 text-white relative overflow-hidden"
+    <>
+      <Analytics />
+      <div
+        className="min-h-screen flex items-center justify-center p-6 md:p-10 text-white relative overflow-hidden"
       style={{
         backgroundColor: '#02081f',
         backgroundImage:
@@ -187,10 +190,13 @@ const App: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 
   if (result) return (
-    <div className="min-h-screen bg-white">
+    <>
+      <Analytics />
+      <div className="min-h-screen bg-white">
        <nav className="h-20 border-b flex items-center px-10 justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center"><i className="fas fa-check text-white text-[10px]"></i></div>
@@ -274,13 +280,16 @@ const App: React.FC = () => {
           </div>
        </div>
     </div>
+    </>
   );
 
   const t = formatTime(timeLeft);
   const completion = Math.round(((Object.keys(userAnswers).length) / quiz.questions.length) * 100);
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
+    <>
+      <Analytics />
+      <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans">
       <header className="h-[72px] bg-white border-b px-8 flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-100">
@@ -417,6 +426,7 @@ const App: React.FC = () => {
         </button>
       </footer>
     </div>
+    </>
   );
 };
 
