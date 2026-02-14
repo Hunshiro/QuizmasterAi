@@ -1,0 +1,7 @@
+{
+  "name": "QuizMaster AI",
+  "description": "Transform any PDF study material into an interactive revision quiz using Gemini AI. Perfect for students and professionals looking to test their knowledge and reinforce learning through intelligent question generation.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
