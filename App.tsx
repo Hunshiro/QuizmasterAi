@@ -111,37 +111,80 @@ const App: React.FC = () => {
     const sec = s % 60;
     return { h: h.toString().padStart(2, '0'), m: m.toString().padStart(2, '0'), s: sec.toString().padStart(2, '0') };
   };
+  const fileSizeMb = file ? (file.size / (1024 * 1024)).toFixed(1) : null;
 
   if (!quiz) return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
-      <div className="max-w-md w-full bg-white p-10 rounded-[2.5rem] shadow-xl text-center">
-        <div className="w-20 h-20 bg-blue-600 rounded-3xl mx-auto mb-8 flex items-center justify-center rotate-45 shadow-blue-200 shadow-xl">
-          <i className="fas fa-layer-group text-white text-3xl -rotate-45"></i>
-        </div>
-        <h1 className="text-3xl font-black text-gray-900 mb-4">Complete Mastery</h1>
-        <p className="text-gray-500 mb-10">Generate sequential quizzes to cover your entire PDF material from start to finish.</p>
-        
-        <label className="block mb-8 group cursor-pointer">
-          <div className="border-2 border-dashed border-gray-200 rounded-3xl p-8 group-hover:border-blue-400 transition-all bg-gray-50/50">
-            <input type="file" className="hidden" accept=".pdf" onChange={e => e.target.files && setFile(e.target.files[0])} />
-            <i className="fas fa-file-pdf text-3xl text-gray-300 mb-3 group-hover:text-blue-500 transition-colors"></i>
-            <p className="text-sm font-bold text-gray-500 tracking-tight">{file ? file.name : 'Choose study document'}</p>
-          </div>
-        </label>
+    <div
+      className="min-h-screen flex items-center justify-center p-6 md:p-10 text-white relative overflow-hidden"
+      style={{
+        backgroundColor: '#02081f',
+        backgroundImage:
+          'radial-gradient(circle at 20% 10%, rgba(35,123,255,0.12), transparent 40%), radial-gradient(circle at 80% 20%, rgba(0,255,255,0.08), transparent 35%), radial-gradient(circle at 50% 50%, rgba(0,112,255,0.06), transparent 60%)'
+      }}
+    >
+      <div className="pointer-events-none absolute inset-0 landing-grid-overlay"></div>
 
-        {error && <div className="bg-red-50 text-red-600 p-3 rounded-xl text-xs font-bold mb-4">{error}</div>}
-        
-        <button 
-          onClick={handleStart} 
-          disabled={!file || loading}
-          className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-lg shadow-lg hover:bg-blue-700 disabled:bg-gray-300 transition-all active:scale-95"
-        >
-          {loading ? (
-             <div className="flex items-center justify-center gap-2">
-               <i className="fas fa-spinner animate-spin"></i> Analyzing...
-             </div>
-          ) : 'Start Complete Revision'}
-        </button>
+      <div className="w-full max-w-[620px] relative">
+        <div className="absolute -left-6 bottom-2 w-14 h-14 border border-cyan-400/60 rounded-xl rotate-[-12deg] shadow-[0_0_20px_rgba(34,211,238,0.35)] flex items-center justify-center text-cyan-300 text-lg">
+          <i className="fas fa-bolt"></i>
+        </div>
+        <div className="absolute -right-4 top-3 w-14 h-14 border border-cyan-400/60 rounded-xl rotate-[10deg] shadow-[0_0_20px_rgba(34,211,238,0.35)] flex items-center justify-center text-cyan-300 text-base">
+          <i className="fas fa-sparkles"></i>
+        </div>
+
+        <div className="rounded-[2.25rem] border border-cyan-400/40 bg-slate-950/65 backdrop-blur-md shadow-[0_0_40px_rgba(34,211,238,0.22)] px-7 py-8 md:px-12 md:py-12">
+          <div className="w-24 h-24 bg-gradient-to-br from-sky-400 to-blue-600 rounded-3xl mx-auto mb-8 flex items-center justify-center shadow-[0_0_40px_rgba(56,189,248,0.45)]">
+            <i className="fas fa-layer-group text-white text-4xl"></i>
+          </div>
+          <h1 className="text-4xl font-black text-center mb-4 tracking-tight">Complete Mastery</h1>
+          <p className="text-center text-slate-300 text-lg mb-10 max-w-[500px] mx-auto">
+            Generate sequential quizzes to cover your entire PDF material from start to finish with AI precision.
+          </p>
+
+          <label className="block mb-7 group cursor-pointer">
+            <div className="rounded-[2rem] border-2 border-dashed border-cyan-500/45 p-8 md:p-10 bg-slate-900/40 group-hover:border-cyan-300 transition-all text-center">
+              <input type="file" className="hidden" accept=".pdf" onChange={e => e.target.files && setFile(e.target.files[0])} />
+              <i className="fas fa-file-lines text-cyan-300 text-5xl mb-4"></i>
+              <p className="font-semibold text-2xl text-slate-100 mb-1">{file ? file.name : 'Choose PDF to Analyze'}</p>
+              <p className="text-slate-400 text-sm">{file ? `${fileSizeMb} MB • Ready for quiz generation` : 'Drop or select your study document'}</p>
+            </div>
+          </label>
+
+          {error && <div className="bg-red-500/15 border border-red-400/50 text-red-200 p-3 rounded-xl text-xs font-bold mb-4">{error}</div>}
+
+          <div className="mb-8 space-y-3">
+            <div className="flex justify-between items-center text-sm">
+              <div className="font-black tracking-widest text-cyan-300 flex items-center gap-2 uppercase">
+                <span className="w-2 h-2 rounded-full bg-cyan-300 animate-pulse"></span>
+                {loading ? 'Analyzing...' : 'Idle'}
+              </div>
+              <span className="text-slate-300 tracking-wider">{loading ? '65% COMPLETED' : 'WAITING FILE'}</span>
+            </div>
+            <div className="h-3 rounded-full border border-cyan-400/30 bg-slate-900/80 overflow-hidden">
+              <div
+                className={`h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-cyan-300 ${loading ? 'loading-bar-anim' : ''}`}
+                style={{ width: loading ? '65%' : file ? '20%' : '0%' }}
+              ></div>
+            </div>
+            <div className="text-[11px] text-slate-400 tracking-widest uppercase flex items-center justify-between">
+              <span>Layer scan: active</span>
+              <span>Semantic parsing: {loading ? '82%' : '0%'}</span>
+              <span>Threads: 04</span>
+            </div>
+          </div>
+
+          <button
+            onClick={handleStart}
+            disabled={!file || loading}
+            className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-slate-950 py-4 rounded-2xl font-black text-lg shadow-[0_0_26px_rgba(34,211,238,0.45)] hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-[0.99]"
+          >
+            {loading ? (
+              <div className="flex items-center justify-center gap-2">
+                <i className="fas fa-spinner animate-spin"></i> Processing PDF...
+              </div>
+            ) : 'Start Complete Revision'}
+          </button>
+        </div>
       </div>
     </div>
   );
